@@ -180,9 +180,6 @@ function E.AddAdvanceProperties(moverDefinition)
   if not moverDefinition.CreatedAdvanced and moverDefinition.Created then
     local mover = moverDefinition.mover
     
-    -- Set Alpha Levels
-    mover:SetAlpha(E.db.movers.alpha)
-    
     local visibleFrame = CreateFrame("FRAME", mover:GetName().."Location")
     visibleFrame:SetWidth(1)
     visibleFrame:SetHeight(1)
@@ -299,6 +296,8 @@ hooksecurefunc(E, 'ToggleMovers', function(self, show, mType)
         E.AddAdvanceProperties(moverDef)
       end
       
+      -- Set Alpha Levels
+      moverDef.mover:SetAlpha(E.db.movers.alpha)
       
       if show and moverDef.type[mType] then
         _G[name.."Location"]:Show()
