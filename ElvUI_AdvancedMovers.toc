@@ -1,0 +1,8 @@
+## Interface: 50001
+## Title: ElvUI Advanced Movers
+## Notes: Extends ElvUI's movers functionality.
+## Author: Dandruff @ US-Whisperwind
+## Version: 1.0.0
+## RequiredDeps: ElvUI
+
+ElvUI_AdvancedMovers.lua
