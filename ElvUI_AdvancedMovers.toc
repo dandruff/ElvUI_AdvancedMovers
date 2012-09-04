@@ -6,3 +6,4 @@
 ## RequiredDeps: ElvUI
 
 ElvUI_AdvancedMovers.lua
+config\advancedmovers.lua
