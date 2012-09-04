@@ -57,7 +57,6 @@ local function RelativeCoords(frame, x, y)
   local returnX, returnY = 0, 0
   
   if x == "MID" then
-    print("Found a mid:", -frame:GetWidth() / 2)
     returnX = -frame:GetWidth() / 2
   else
     returnX = tonumber(x)
@@ -96,12 +95,7 @@ local function UpdateLocationText(mover)
   
   -- Only do one of the following
   if positionList["ALL"] then
-    local newX, newY = RelativeCoords(mover.location, positionList["ALL"].x, positionList["ALL"].y)
-    
-    if (mover:GetName() == "AurasMover") then
-      print("setting frame 'AurasMover' to:", newX, ",", newY, "@", positionList["ALL"].first, "and", positionList["ALL"].second)
-    end
-    
+    local newX, newY = RelativeCoords(mover.location, positionList["ALL"].x, positionList["ALL"].y)    
     mover.visibleFrame:SetPoint(positionList["ALL"].first, mover, positionList["ALL"].second, newX, newY)
     return
   end
