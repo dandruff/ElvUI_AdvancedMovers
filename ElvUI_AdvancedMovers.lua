@@ -26,7 +26,8 @@ function E.AddAdvanceProperties(moverDefinition)
     local mover = moverDefinition.mover
     
     local visibleFrame = CreateFrame("FRAME", mover:GetName().."Location")
-    visibleFrame:SetFrameLevel(mover:GetFrameLevel() + 1)
+    visibleFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+    --visibleFrame:SetFrameLevel(mover:GetFrameLevel() + 1)
     
     -- set up the point from the mover's profile
     --E.SetSmartPosition(visibleFrame, mover, moverProfile)
@@ -78,7 +79,7 @@ local function UpdateLocationText(mover)
   local left, top = mover:GetLeft(), mover:GetTop()
   if not left or not top then left = 0; top = 0 end
   local halfWidth, halfHeight = mover:GetWidth() / 2, mover:GetHeight() / 2
-  local x, y = mfloor(left - midX + halfWidth), mfloor(top - midY + 1 - halfHeight)
+  local x, y = mfloor(left - midX + halfWidth + 0.5), mfloor(top - midY - halfHeight + 0.5)
   
   -- in case the unit frame does not exist
   if left and top then
@@ -91,11 +92,12 @@ local function UpdateLocationText(mover)
   end
   positionList = moverProfile.position
   
+  mover.visibleFrame:SetWidth(mover.location:GetWidth())
   mover.visibleFrame:ClearAllPoints()
   
   -- Only do one of the following
   if positionList["ALL"] then
-    local newX, newY = RelativeCoords(mover.location, positionList["ALL"].x, positionList["ALL"].y)    
+    local newX, newY = RelativeCoords(mover.location, positionList["ALL"].x, positionList["ALL"].y)
     mover.visibleFrame:SetPoint(positionList["ALL"].first, mover, positionList["ALL"].second, newX, newY)
     return
   end
