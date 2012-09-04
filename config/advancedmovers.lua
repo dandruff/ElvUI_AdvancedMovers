@@ -22,16 +22,25 @@ local E, L, V, P, G, _ = unpack(ElvUI)
 
 local default = {
   position = {
-    TOP     = { first = "TOPLEFT", second = "BOTTOMLEFT", x = 3, y = 0, },
+    TOP     = { first = "TOPLEFT", second = "BOTTOMLEFT", x = 3, y = -3, },
     BOTTOM  = { first = "BOTTOMLEFT", second = "TOPLEFT", x = 3, y = 3, },
   },
 }
 
+-- A default profile that basically centers the positions (for large frames)
 local defaultLarge = {
   position = {
-    ALL = { first = "TOP", second = "CENTER", x = "MID", y = -6, },
+    ALL = { first = "TOP", second = "CENTER", x = 0, y = -6, },
   },
 }
+
+-- A default profile that is optimal for AB frames
+local defaultAB = {
+  position = {
+    ALL = { first = "LEFT", second = "LEFT", x = 3, y = 0, },
+  },
+}
+
 
 P["AdvancedMovers"] = {
   -- default profile for unknow movers
@@ -40,17 +49,17 @@ P["AdvancedMovers"] = {
   ["Profiles"] = {
     ["AlertFrameMover"] = default,
     ["AltPowerBarMover"] = default,
-    ["ArenaHeaderMover"] = default,
+    ["ArenaHeaderMover"] = defaultLarge,
     ["AurasMover"] = defaultLarge,
     ["BagsMover"] = default,
     ["BNETMover"] = default,
     ["BossButton"] = default,
-    ["BossHeaderMover"] = default,
-    ["ElvAB_1"] = default,
-    ["ElvAB_2"] = default,
-    ["ElvAB_3"] = default,
-    ["ElvAB_4"] = default,
-    ["ElvAB_5"] = default,
+    ["BossHeaderMover"] = defaultLarge,
+    ["ElvAB_1"] = defaultAB,
+    ["ElvAB_2"] = defaultAB,
+    ["ElvAB_3"] = defaultAB,
+    ["ElvAB_4"] = defaultAB,
+    ["ElvAB_5"] = defaultAB,
     ["ElvUF_AssistMover"] = defaultLarge,
     ["ElvUF_FocusMover"] = default,
     ["ElvUF_FocusCastbarMover"] = default,
@@ -73,8 +82,13 @@ P["AdvancedMovers"] = {
     ["MicrobarMover"] = default,
     ["MinimapMover"] = default,
     ["PetAB"] = default,
-    ["ReputationBarMover"] = default,
-    ["ShiftAB"] = default,
+    ["ReputationBarMover"] = {
+        position = {
+          TOP     = { first = "TOPRIGHT", second = "BOTTOMRIGHT", x = -3, y = 0, },
+          BOTTOM  = { first = "BOTTOMRIGHT", second = "TOPRIGHT", x = -3, y = 3, },
+        },
+      },
+    ["ShiftAB"] = defaultAB,
     ["TempEnchantMover"] = default,
     ["TooltipMover"] = default,
     ["TotemBarMover"] = default,
