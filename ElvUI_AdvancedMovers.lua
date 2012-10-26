@@ -13,13 +13,6 @@ local E, L, V, P = unpack(ElvUI)
 local Sticky = LibStub("LibSimpleSticky-1.0")
 local mfloor, tinsert = math.floor, table.insert
 
-
--- Install
-P["movers"] = {
-  ["alpha"] = 0.5,
-  ["showlocation"] = true,
-}
-
 -- Create Font Strings that show the Location of the mover
 function E.AddAdvanceProperties(moverDefinition)
   if not moverDefinition.CreatedAdvanced and moverDefinition.Created then
@@ -27,10 +20,6 @@ function E.AddAdvanceProperties(moverDefinition)
     
     local visibleFrame = CreateFrame("FRAME", mover:GetName().."Location")
     visibleFrame:SetFrameStrata("FULLSCREEN_DIALOG")
-    --visibleFrame:SetFrameLevel(mover:GetFrameLevel() + 1)
-    
-    -- set up the point from the mover's profile
-    --E.SetSmartPosition(visibleFrame, mover, moverProfile)
     
     -- Create Location Label
     local fs = visibleFrame:CreateFontString(nil, "OVERLAY")
@@ -39,9 +28,8 @@ function E.AddAdvanceProperties(moverDefinition)
     fs:SetText(" ")
     visibleFrame:SetWidth(1)
     visibleFrame:SetHeight(fs:GetHeight())
-    
-    
-    if not E.db.movers.showlocation then
+
+    if not E.db.advancedmovers.showlocation then
       fs:Hide()
     end
     
@@ -54,6 +42,7 @@ function E.AddAdvanceProperties(moverDefinition)
   end
 end
 
+-- gives me the MID or coordinate relative to a frame
 local function RelativeCoords(frame, x, y)
   local returnX, returnY = 0, 0
   
@@ -72,6 +61,7 @@ local function RelativeCoords(frame, x, y)
   return returnX, returnY
 end
 
+-- Updates the location text for a mover
 local function UpdateLocationText(mover)
   local ResX, ResY = mfloor(GetScreenWidth()), mfloor(GetScreenHeight())
   local midX, midY = ResX / 2, ResY / 2
@@ -86,9 +76,9 @@ local function UpdateLocationText(mover)
     mover.location:SetText(x .. ", " .. y)
   end
   
-  local moverProfile = P.AdvancedMovers.Profiles[mover:GetName()]
+  local moverProfile = P.advancedmovers.Profiles[mover:GetName()]
   if not moverProfile then
-    moverProfile = P.AdvancedMovers.UnknownMover
+    moverProfile = P.advancedmovers.UnknownMover
   end
   positionList = moverProfile.position
   
@@ -133,6 +123,7 @@ local function UpdateLocationLabel_On(mover)
   UpdateLocationText(mover)
 
   mover:SetScript("OnDragStart", function(self)
+      -- heh, copy elv's code :)
       if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end	
 
       if E.db['general'].stickyFrames then
@@ -141,12 +132,14 @@ local function UpdateLocationLabel_On(mover)
         self:StartMoving() 
       end
       
+      -- do my mover's update
       mover.updater = CreateFrame("FRAME")
       mover.updater:SetScript("OnUpdate", function(...)
           UpdateLocationText(mover)  -- Continous Update
         end)
     end)
   mover:SetScript("OnDragStop", function(self)
+      -- Again copying elv's code
       if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
       if E.db['general'].stickyFrames then
         Sticky:StopMoving(self)
@@ -185,6 +178,7 @@ local function UpdateLocationLabel_On(mover)
 
       self:SetUserPlaced(false)
       
+      -- do my code to unregister stuff
       if not mover.updater then return end
       mover.updater:SetScript("OnUpdate", nil)
     end)
@@ -207,7 +201,7 @@ hooksecurefunc(E, 'ToggleMovers', function(self, show, mType)
       end
       
       -- Set Alpha Levels
-      moverDef.mover:SetAlpha(E.db.movers.alpha)
+      moverDef.mover:SetAlpha(E.db.advancedmovers.alpha)
       
       if show and moverDef.type[mType] then
         _G[name.."Location"]:Show()
@@ -221,10 +215,10 @@ hooksecurefunc(E, 'ToggleMovers', function(self, show, mType)
   end)
 
 -- Advanced Movers Options
-E.Options.args.general.args["movers"] = {
-  order = 10,
+E.Options.args.general.args["advancemovers"] = {
+  order = 9,
   type = "group",
-  name = "Movers",
+  name = "Advanced Movers",
   guiInline = true,
   args = {
     moverAlpha = {
@@ -235,15 +229,15 @@ E.Options.args.general.args["movers"] = {
       isPercent = true,
       min = 0, max = 1, step = 0.01,
       set = function(info, value)
-          E.db.movers.alpha = value
+          E.db.advancedmovers.alpha = value
           for _,f in pairs(E.CreatedMovers) do
             if f.Created then
-              f.mover:SetAlpha(E.db.movers.alpha)
+              f.mover:SetAlpha(E.db.advancedmovers.alpha)
             end
           end
         end,
       get = function(info)
-          return E.db.movers.alpha
+          return E.db.advancedmovers.alpha
         end,
     },
     moverLocation = {
@@ -251,7 +245,7 @@ E.Options.args.general.args["movers"] = {
       order = 1,
       type = 'toggle',
       set = function(info, value)
-          E.db.movers.showlocation = value
+          E.db.advancedmovers.showlocation = value
           
           -- Update all the mover's location labels
           for name, moverDef in pairs(E.CreatedMovers) do
@@ -266,7 +260,7 @@ E.Options.args.general.args["movers"] = {
           
         end,
       get = function(info)
-          return E.db.movers.showlocation
+          return E.db.advancedmovers.showlocation
         end,
     },
   },

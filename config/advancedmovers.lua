@@ -8,18 +8,12 @@
 local ADDON_NAME = ...
 ElvUI_AdvancedMovers = ...
 
-if not ElvUI then return end
 local E, L, V, P, G, _ = unpack(ElvUI)
 
-
--- positions:
---  ALL - trump all others
--- combine the following
---  RIGHT
---  LEFT
---  TOP
---  BOTTOM
-
+-- Custom Location Postions Settings
+--    ALL - trump all others
+--    RIGHT, LEFT, TOP, BOTTOM
+--    TOPRIGHT, TOPLEFT, BOTTOMRIGHT, BOTTOMLEFT
 local default = {
   position = {
     TOP     = { first = "TOPLEFT", second = "BOTTOMLEFT", x = 3, y = -3, },
@@ -42,8 +36,14 @@ local defaultAB = {
 }
 
 
-P["AdvancedMovers"] = {
-  -- default profile for unknow movers
+P["advancedmovers"] = {
+  -- Mover's Transparency
+  ["alpha"] = 0.5,
+  
+  -- Show Mover's Locations
+  ["showlocation"] = true,
+
+  -- default profile for unknown movers
   ["UnknownMover"] = default,
 
   ["Profiles"] = {
@@ -52,13 +52,18 @@ P["AdvancedMovers"] = {
     ["ArenaHeaderMover"] = defaultLarge,
     ["AurasMover"] = defaultLarge,
     ["BagsMover"] = default,
-    ["BNETMover"] = default,
+    ["BNETMover"] = defaultAB,
     ["BossButton"] = default,
     ["BossHeaderMover"] = defaultLarge,
     ["ElvAB_1"] = defaultAB,
     ["ElvAB_2"] = defaultAB,
     ["ElvAB_3"] = defaultAB,
-    ["ElvAB_4"] = defaultAB,
+    ["ElvAB_4"] = {
+        position = {
+          TOP     = { first = "TOPRIGHT", second = "BOTTOMRIGHT", x = -3, y = 0, },
+          BOTTOM  = { first = "BOTTOMRIGHT", second = "TOPRIGHT", x = -3, y = 3, },
+        },
+      },
     ["ElvAB_5"] = defaultAB,
     ["ElvUF_AssistMover"] = defaultLarge,
     ["ElvUF_FocusMover"] = default,
