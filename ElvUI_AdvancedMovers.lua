@@ -121,63 +121,18 @@ end
 local function UpdateLocationLabel_On(mover)
   -- Initial Update
   UpdateLocationText(mover)
-
-  mover:SetScript("OnDragStart", function(self)
-      -- heh, copy elv's code :)
-      if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end	
-
-      if E.db['general'].stickyFrames then
-        Sticky:StartMoving(self, E['snapBars'], self.snapOffset, self.snapOffset, self.snapOffset, self.snapOffset)
-      else
-        self:StartMoving() 
-      end
-      
+  
+  mover:HookScript("OnDragStart", function(self)
       -- do my mover's update
-      mover.updater = CreateFrame("FRAME")
+      if not mover.updater then
+        mover.updater = CreateFrame("FRAME")
+      end
       mover.updater:SetScript("OnUpdate", function(...)
           UpdateLocationText(mover)  -- Continous Update
         end)
     end)
-  mover:SetScript("OnDragStop", function(self)
-      -- Again copying elv's code
-      if InCombatLockdown() then E:Print(ERR_NOT_IN_COMBAT) return end
-      if E.db['general'].stickyFrames then
-        Sticky:StopMoving(self)
-      else
-        self:StopMovingOrSizing()
-      end
-      
-      local screenWidth, screenHeight = E.UIParent:GetRight(), E.UIParent:GetTop()
-      local x, y = self:GetCenter()
-      local point
-      
-      if y > (screenHeight / 2) then
-        point = "TOP"
-        y = -(screenHeight - self:GetTop())
-      else
-        point = "BOTTOM"
-        y = self:GetBottom()
-      end
-      
-      if x > (screenWidth / 2) then
-        point = point.."RIGHT"
-        x = -(screenWidth - self:GetRight())
-      else
-        point = point.."LEFT"
-        x = self:GetLeft()
-      end
-
-      self:ClearAllPoints()
-      self:Point(point, E.UIParent, point, x, y)
-
-      E:SaveMoverPosition(self:GetName())
-      
-      if postdrag ~= nil and type(postdrag) == 'function' then
-        postdrag(self, E:GetScreenQuadrant(self))
-      end
-
-      self:SetUserPlaced(false)
-      
+    
+  mover:HookScript("OnDragStop", function(self)
       -- do my code to unregister stuff
       if not mover.updater then return end
       mover.updater:SetScript("OnUpdate", nil)
@@ -194,6 +149,7 @@ hooksecurefunc(E, 'CreateMover', function(self, frame, name)
 end)
 
 hooksecurefunc(E, 'ToggleMovers', function(self, show, mType)
+    print("toggle movers")
     for name, moverDef in pairs(E.CreatedMovers) do
       -- One of elvs weird frames, we have to manually add our properties
       if not moverDef.CreatedAdvanced then
