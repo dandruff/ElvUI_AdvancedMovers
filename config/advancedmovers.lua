@@ -48,6 +48,9 @@ P["advancedmovers"] = {
   
   -- default profile for unknown movers
   ["UnknownMover"] = default,
+  
+  -- use mine or Elv's coordinate calculation
+  ["calcFromCenter"] = false,
 
   ["Profiles"] = {
     ["AlertFrameMover"] = default,

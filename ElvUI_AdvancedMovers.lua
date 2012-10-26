@@ -63,16 +63,26 @@ end
 
 -- Updates the location text for a mover
 local function UpdateLocationText(mover)
-  local ResX, ResY = mfloor(GetScreenWidth()), mfloor(GetScreenHeight())
-  local midX, midY = ResX / 2, ResY / 2
+  if not mover:IsShown() then return end
 
-  local left, top = mover:GetLeft(), mover:GetTop()
-  if not left or not top then left = 0; top = 0 end
-  local halfWidth, halfHeight = mover:GetWidth() / 2, mover:GetHeight() / 2
-  local x, y = mfloor(left - midX + halfWidth + 0.5), mfloor(top - midY - halfHeight + 0.5)
+  local x, y
+  
+  if E.db.advancedmovers.calcFromCenter then
+    local ResX, ResY = mfloor(GetScreenWidth()), mfloor(GetScreenHeight())
+    local midX, midY = ResX / 2, ResY / 2
+
+    local left, top = mover:GetLeft(), mover:GetTop()
+    if not left or not top then left = 0; top = 0 end
+    local halfWidth, halfHeight = mover:GetWidth() / 2, mover:GetHeight() / 2
+    x, y = mfloor(left - midX + halfWidth + 0.5), mfloor(top - midY - halfHeight + 0.5)
+  else
+    E:UpdateNudgeFrame(mover)
+    x = ElvUIMoverNudgeWindow.xOffset.currentValue
+    y = ElvUIMoverNudgeWindow.yOffset.currentValue
+  end
   
   -- in case the unit frame does not exist
-  if left and top then
+  if x and y then
     mover.location:SetText(x .. ", " .. y)
   end
   
@@ -94,8 +104,14 @@ local function UpdateLocationText(mover)
   
   -- Need to do some more calcs
   local hor, ver
-  if y < 0 then ver = "BOTTOM" else ver = "TOP" end
-  if x < 0 then hor = "RIGHT" else hor = "LEFT" end
+  
+  if E.db.advancedmovers.calcFromCenter then
+    if tonumber(y) < 0 then ver = "BOTTOM" else ver = "TOP" end
+    if tonumber(x) < 0 then hor = "RIGHT" else hor = "LEFT" end
+  else
+    if tonumber(y) > 0 then ver = "BOTTOM" else ver = "TOP" end
+    if tonumber(x) > 0 then hor = "RIGHT" else hor = "LEFT" end
+  end
   
   if positionList[ver] then  -- TOP OR BOTTOM
     local newX, newY = RelativeCoords(mover.location, positionList[ver].x, positionList[ver].y)
@@ -149,7 +165,6 @@ hooksecurefunc(E, 'CreateMover', function(self, frame, name)
 end)
 
 hooksecurefunc(E, 'ToggleMovers', function(self, show, mType)
-    print("toggle movers")
     for name, moverDef in pairs(E.CreatedMovers) do
       -- One of elvs weird frames, we have to manually add our properties
       if not moverDef.CreatedAdvanced then
@@ -247,6 +262,15 @@ E.Options.args.general.args["advancemovers"] = {
       get = function(info)
           return E.db.advancedmovers.enableNudge
         end,
+    },
+    
+    calcFromCenter = {
+      name = "Calculate From Center",
+      desc = "|cff5599DDEnabled|r: Shows coordinates from the center of the frame\n\n|cff5599DDDisabled:|r Shows coordinates according to ElvUI |cffFF0000(default)|r",
+      order = 4,
+      type = 'toggle',
+      set = function(info, value) E.db.advancedmovers.calcFromCenter = value end,
+      get = function(info) return E.db.advancedmovers.calcFromCenter end,
     },
   },
 }

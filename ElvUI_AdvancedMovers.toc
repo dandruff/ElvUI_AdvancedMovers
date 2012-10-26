@@ -2,7 +2,7 @@
 ## Title: |cff1784d1ElvUI|r Advanced Movers
 ## Notes: Extends ElvUI's movers functionality.
 ## Author: Dandruff @ US-Whisperwind
-## Version: 1.0.2 Beta
+## Version: 1.0.2
 ## RequiredDeps: ElvUI
 
 ElvUI_AdvancedMovers.lua
