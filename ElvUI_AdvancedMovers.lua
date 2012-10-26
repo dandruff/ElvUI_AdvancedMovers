@@ -214,6 +214,13 @@ hooksecurefunc(E, 'ToggleMovers', function(self, show, mType)
     end
   end)
 
+hooksecurefunc(E, 'CreateMoverPopup', function(self)
+  if not self.db.advancedmovers.enableNudge then
+    self.oldNudgeFrame = ElvUIMoverNudgeWindow
+    ElvUIMoverNudgeWindow = CreateFrame("FRAME")
+  end
+end)
+  
 -- Advanced Movers Options
 E.Options.args.general.args["advancemovers"] = {
   order = 9,
@@ -242,7 +249,7 @@ E.Options.args.general.args["advancemovers"] = {
     },
     moverLocation = {
       name = L['Location Text'],
-      order = 1,
+      order = 2,
       type = 'toggle',
       set = function(info, value)
           E.db.advancedmovers.showlocation = value
@@ -261,6 +268,28 @@ E.Options.args.general.args["advancemovers"] = {
         end,
       get = function(info)
           return E.db.advancedmovers.showlocation
+        end,
+    },
+    
+    nudgeEnabled = {
+      name = "Nudge Enabled",
+      order = 3,
+      type = 'toggle',
+      set = function(info, value)
+          E.db.advancedmovers.enableNudge = value
+          
+          if value then
+            if E.oldNudgeFrame then
+              ElvUIMoverNudgeWindow = E.oldNudgeFrame
+            end
+          else
+            E.oldNudgeFrame = ElvUIMoverNudgeWindow
+            ElvUIMoverNudgeWindow = CreateFrame("FRAME")
+          end
+          
+        end,
+      get = function(info)
+          return E.db.advancedmovers.enableNudge
         end,
     },
   },

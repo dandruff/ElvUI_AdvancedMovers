@@ -43,6 +43,9 @@ P["advancedmovers"] = {
   -- Show Mover's Locations
   ["showlocation"] = true,
 
+  -- Show the Nudger
+  ["enableNudge"] = true,
+  
   -- default profile for unknown movers
   ["UnknownMover"] = default,
 
